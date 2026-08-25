@@ -2,8 +2,9 @@
 set -e
 
 echo "Waiting for Kafka to be ready..."
-while ! nc -z localhost 9092; do
-  sleep 1
+while ! docker exec flowforge-kafka kafka-topics --list --bootstrap-server localhost:9092 > /dev/null 2>&1; do
+  echo "Kafka not ready yet, waiting..."
+  sleep 2
 done
 echo "Kafka is ready. Creating topics..."
 

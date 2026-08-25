@@ -1,0 +1,8 @@
+-r prod.txt
+torch>=2.6.0
+pytest>=8.0.0
+black
+ruff
+mypy
+ipython
+jupyter

@@ -24,3 +24,9 @@ status:
 
 clean:
 	docker-compose -f docker/docker-compose.yml down -v
+
+install-prod:
+	pip install -r requirements/prod.txt
+
+install-dev:
+	pip install -r requirements/dev.txt
