@@ -1,0 +1,51 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*.so
+
+# Virtual environments
+venv/
+env/
+.venv/
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# Jupyter notebooks checkpoints
+.ipynb_checkpoints/
+
+# Logs
+logs/
+*.log
+
+# Spark checkpoints
+checkpoint/
+/tmp/
+
+# Feast local registry
+feature_store.yaml.local
+*.db
+
+# Environment variables
+.env
+
+# MLflow
+mlruns/
+*.parquet
+
+# Docker volumes
+volumes/
+
+# Model files (не коммитим обученные модели)
+*.pkl
+*.joblib
+*.h5
+*.pt
+*.pth
+*.onnx
+*.pickle
+models/
+weights/
+checkpoints/

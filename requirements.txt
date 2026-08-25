@@ -1,0 +1,32 @@
+# Core
+kafka-python>=2.0.3
+pyspark==4.2.0
+findspark>=2.0.1
+
+# Databases
+pymongo>=4.10.0
+clickhouse-connect>=0.8.17
+redis>=5.1.0
+
+# Feast
+feast>=0.64.0
+
+# ML
+xgboost>=3.0.0
+lightgbm>=4.5.0
+scikit-learn>=1.6.0
+torch>=2.6.0
+optuna>=4.0.0
+
+# MLflow
+mlflow>=2.20.0
+
+# Utils
+python-dotenv>=1.0.0
+pandas>=2.2.2
+numpy>=2.0.0
+requests>=2.31.0
+pyyaml>=6.0.1
+
+# Tests
+pytest>=8.0.0
