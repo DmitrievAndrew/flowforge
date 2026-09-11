@@ -20,7 +20,7 @@ This public repository contains the complete infrastructure and pipeline:
 
 **The trained ML model and training code are NOT included** - they are proprietary.
 
-- For **personal, non-commercial use**: contact [your-email@example.com] to request access.
+- For **personal, non-commercial use**: contact [dmitriev.andrew13@yandex.ru] to request access.
 - For **commercial use**: see [COMMERCIAL_LICENSE.md](COMMERCIAL_LICENSE.md).
 
 Without the model, the pipeline still works end-to-end (data flows, features are computed, dashboards update). Only the final ML prediction step requires the model.
