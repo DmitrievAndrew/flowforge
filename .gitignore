@@ -49,3 +49,8 @@ volumes/
 models/
 weights/
 checkpoints/
+
+# Rust
+consumer-rs/target/
+target/
+**/*.rs.bk
