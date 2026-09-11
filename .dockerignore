@@ -1,0 +1,15 @@
+.git
+.gitignore
+**/target/
+**/__pycache__/
+**/*.pyc
+**/.venv/
+**/venv/
+**/.pytest_cache/
+**/.mypy_cache/
+**/.ruff_cache/
+docs/
+notebooks/
+tests/
+*.log
+.env

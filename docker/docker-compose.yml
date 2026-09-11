@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   zookeeper:
     image: confluentinc/cp-zookeeper:7.5.0
@@ -21,7 +19,7 @@ services:
       - zookeeper
     ports:
       - "9092:9092"
-      - "9093:9093"   # внутренний порт для контейнеров
+      - "9093:9093"
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
@@ -36,6 +34,12 @@ services:
       KAFKA_AUTO_CREATE_TOPICS_ENABLE: "false"
     volumes:
       - kafka-data:/var/lib/kafka/data
+    healthcheck:
+      test: ["CMD", "kafka-broker-api-versions", "--bootstrap-server", "localhost:9092"]
+      interval: 10s
+      timeout: 10s
+      retries: 10
+      start_period: 30s
     restart: unless-stopped
 
   mongodb:
@@ -52,21 +56,19 @@ services:
       - ./services/mongodb/init.js:/docker-entrypoint-initdb.d/init.js:ro
     restart: unless-stopped
 
-  # clickhouse:
-  #   image: clickhouse/clickhouse-server:23.8
-  #   container_name: flowforge-clickhouse
-  #   ports:
-  #     - "8123:8123"
-  #     - "9000:9000"
-  #   volumes:
-  #     - clickhouse-data:/var/lib/clickhouse
-  #     - ./services/clickhouse/config.xml:/etc/clickhouse-server/config.d/config.xml:ro
-  #     - ./services/clickhouse/users.xml:/etc/clickhouse-server/users.d/users.xml:ro
-  #   environment:
-  #     CLICKHOUSE_DB: flowforge
-  #     CLICKHOUSE_USER: default
-  #     CLICKHOUSE_PASSWORD: clickhouse
-  #   restart: unless-stopped
+  clickhouse:
+    image: clickhouse/clickhouse-server:23.8
+    container_name: flowforge-clickhouse
+    ports:
+      - "8123:8123"
+      - "9000:9000"
+    volumes:
+      - clickhouse-data:/var/lib/clickhouse
+    environment:
+      CLICKHOUSE_DB: flowforge
+      CLICKHOUSE_USER: default
+      CLICKHOUSE_PASSWORD: clickhouse
+    restart: unless-stopped
 
   redis:
     image: redis:7.2-alpine
@@ -88,7 +90,6 @@ services:
       GF_SECURITY_ADMIN_PASSWORD: admin
     volumes:
       - grafana-data:/var/lib/grafana
-      - ./services/grafana/datasources.yaml:/etc/grafana/provisioning/datasources/datasources.yaml:ro
     restart: unless-stopped
 
   kafka-ui:
@@ -104,11 +105,51 @@ services:
       - kafka
     restart: unless-stopped
 
+  # ---------- FlowForge services ----------
+
+  producer:
+    build:
+      context: ..
+      dockerfile: docker/services/producer/Dockerfile
+    container_name: flowforge-producer
+    depends_on:
+      kafka:
+        condition: service_healthy
+      mongodb:
+        condition: service_started
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9093
+      TICKERS_FILE: /app/config/tickers.txt
+      MOEX_INTERVAL_SECONDS: 60
+      KAFKA_TOPIC_RAW_TRADES: raw-trades
+    volumes:
+      - ../config:/app/config:ro
+    restart: unless-stopped
+
+  consumer-rs:
+    build:
+      context: ..
+      dockerfile: docker/services/consumer-rs/Dockerfile
+    container_name: flowforge-consumer-rs
+    depends_on:
+      kafka:
+        condition: service_healthy
+      mongodb:
+        condition: service_started
+    environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9093
+      KAFKA_TOPIC_RAW_TRADES: raw-trades
+      KAFKA_GROUP_ID: flowforge-consumer
+      MONGODB_URI: mongodb://admin:password@mongodb:27017
+      MONGODB_DATABASE: flowforge
+      RUST_LOG: info
+    restart: unless-stopped
+
 volumes:
   zookeeper-data:
   zookeeper-log:
   kafka-data:
   mongodb-data:
-  #clickhouse-data:
+  clickhouse-data:
   redis-data:
   grafana-data:

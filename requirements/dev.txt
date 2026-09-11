@@ -1,8 +1,8 @@
--r prod.txt
-torch>=2.6.0
+-r producer.txt
+-r ml.txt
 pytest>=8.0.0
-black
-ruff
-mypy
-ipython
-jupyter
+pytest-asyncio>=0.24.0
+ruff>=0.6.0
+mypy>=1.13.0
+basedpyright>=1.20.0
+ipython>=8.0.0
